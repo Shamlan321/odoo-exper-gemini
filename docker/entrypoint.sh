@@ -6,6 +6,20 @@ log() {
     echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
 }
 
+# Configure DNS for proper network connectivity
+log "Configuring DNS and network settings..."
+if [ -f /app/docker/configure-dns.sh ]; then
+    chmod +x /app/docker/configure-dns.sh
+    /app/docker/configure-dns.sh
+    if [ $? -eq 0 ]; then
+        log "DNS configuration completed successfully"
+    else
+        log "DNS configuration completed with warnings"
+    fi
+else
+    log "Warning: DNS configuration script not found"
+fi
+
 if [ "$1" = "updater" ]; then
     log "Starting updater service..."
     
