@@ -1,5 +1,6 @@
 # Odoo Expert
 *This project is based on: https://github.com/MFYDev/odoo-expert with changes made to use Gemini LLM instead of ChatGPT*
+
 RAG-Powered Odoo Documentation Assistant
 
 Intro, Updates & Demo Video: https://fanyangmeng.blog/introducing-odoo-expert/
