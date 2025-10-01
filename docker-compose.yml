@@ -38,7 +38,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "2222:8000"  # API port
+      - "3333:8000"  # API port
       - "8501:8501"  # UI port
     env_file:
       - .env
