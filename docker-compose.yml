@@ -1,31 +1,17 @@
-networks:
-  odoo_network:
-    driver: bridge
-    driver_opts:
-      com.docker.network.bridge.enable_icc: "true"
-      com.docker.network.bridge.enable_ip_masquerade: "true"
-      com.docker.network.driver.mtu: "1500"
-
 services:
   db:
     image: pgvector/pgvector:pg17
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-odoo_expert}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./src/sqls/init.sql:/docker-entrypoint-initdb.d/init.sql
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
-      - 1.1.1.1
-    networks:
-      - odoo_network
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-postgres}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -38,26 +24,20 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "3333:8000"  # API port
+      - "8000:8000"  # API port
       - "8501:8501"  # UI port
     env_file:
       - .env
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_HOST=${POSTGRES_HOST}
-      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}  # Fixed defaults
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-odoo_expert}
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432  # This should be 5432 since we're inside Docker network
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
-      - LLM_MODEL=${LLM_MODEL}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4}
       - BEARER_TOKEN=${BEARER_TOKEN}
-      - CORS_ORIGINS=${CORS_ORIGINS}
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
-      - 1.1.1.1
-    networks:
-      - odoo_network
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
     volumes:
       - ./raw_data:/app/raw_data:rw
       - ./markdown:/app/markdown:rw

@@ -25,10 +25,6 @@ RUN apt-get update && \
     git \
     cron \
     curl \
-    wget \
-    dnsutils \
-    iputils-ping \
-    net-tools \
     ca-certificates \
     supervisor \
     && apt-get clean && \
@@ -43,7 +39,6 @@ RUN mkdir -p raw_data markdown logs /var/log/supervisor && \
 COPY main.py pull_rawdata.sh ./
 COPY src/ ./src/
 COPY docker/entrypoint.sh ./docker/entrypoint.sh
-COPY docker/configure-dns.sh ./docker/configure-dns.sh
 COPY docker/crontab /etc/cron.d/updater-cron
 COPY docker/healthcheck.py ./docker/healthcheck.py
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -53,7 +48,6 @@ RUN chmod 0644 /etc/cron.d/updater-cron && \
     crontab /etc/cron.d/updater-cron && \
     chmod +x pull_rawdata.sh && \
     chmod +x docker/entrypoint.sh && \
-    chmod +x docker/configure-dns.sh && \
     chmod +x docker/healthcheck.py && \
     touch /var/log/cron.log && \
     chmod 0666 /var/log/cron.log && \
