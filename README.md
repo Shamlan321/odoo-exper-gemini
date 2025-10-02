@@ -112,18 +112,18 @@ Assuming the table name is `odoo_docs`. If you have a different table name, plea
 4. Pull the raw data and write to your PostgreSQL's table:
     ```bash
     # Pull documentation (uses ODOO_VERSIONS from .env)
-    docker compose run --rm odoo-expert ./pull_rawdata.sh
+    docker-compose run --rm odoo-expert ./pull_rawdata.sh
 
     # Convert RST to Markdown
-    docker compose run --rm odoo-expert python main.py process-raw
+    docker-compose run --rm odoo-expert python main.py process-raw
 
     # Process documents
-    docker compose run --rm odoo-expert python main.py process-docs
+    docker-compose run --rm odoo-expert python main.py process-docs
     ```
 5. Access the UI at port 8501 and the API at port 8000
 6. Docker compose will automatically pull the latest changes and update the system once a day, or you can manually update by running the following command:
     ```bash
-    docker compose run --rm odoo-expert python main.py check-updates
+    docker-compose run --rm odoo-expert python main.py check-updates
     ```
 
 ### Source Install
